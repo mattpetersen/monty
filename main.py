@@ -1,9 +1,11 @@
 import asyncio
-import discord
-from config import TOKEN
 
 # pip install git+https://github.com/abenassi/Google-Search-API
+import discord
 from google import google
+
+from config import TOKEN
+from calculator import calculate
 
 
 client = discord.Client()
@@ -42,9 +44,7 @@ async def on_message(message):
         query = message.content[len('!calc'):]
         temp = await client.send_message(message.channel,
             f'calculating {query!r}...')
-        regex = r'(\d+) + (\d+)'
-
-        await client.edit_message(temp, top_result)
+        await client.edit_message(temp, calculate(query))
 
 
 
