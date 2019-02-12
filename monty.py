@@ -19,14 +19,12 @@ async def on_ready():
 @client.event
 async def on_message(message):
     if message.content.startswith('!count'):
-        temp = await client.send_message(message.channel,
-            f'counting messages by {message.author}....')
         count = 0
         async for log in client.logs_from(message.channel, limit=100):
             if log.author == message.author:
                 count += 1
-        await client.edit_message(temp,
-            f'@{message.author} has sent {count} messages')
+        await client.send_message(message.channel,
+            f'{message.author} has sent {count} messages')
 
     elif message.content.startswith('!sleep'):
         await asyncio.sleep(5)
@@ -34,18 +32,13 @@ async def on_message(message):
 
     elif message.content.startswith('!google'):
         query = message.content[len('!google'):]
-        temp = await client.send_message(message.channel,
-            f'googling {query}...')
         results = google.search(query, 1)
         results = '\n'.join(r.description for r in results[:3])
-        await client.edit_message(temp, results)
+        await client.send_message(message.channel, results)
 
     elif message.content.startswith('!calc'):
         query = message.content[len('!calc'):]
-        temp = await client.send_message(message.channel,
-            f'calculating {query!r}...')
-        await client.edit_message(temp, calculate(query))
-
+        await client.send_message(message.channel, calculate(query))
 
 
 client.run(TOKEN)
