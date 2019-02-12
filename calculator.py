@@ -14,6 +14,15 @@ def apply_operation(a: str, b: str, op: str) -> str:
 
 
 def calculate(message: str) -> Union[int, float]:
+    parens = re.search(r'\(.+\)', message)
+    while parens:
+        message = (
+            message[:parens.start()]
+            + calculate(parens.group(0).strip('()'))
+            + message[parens.end():]
+        )
+        parens = re.search(r'\(.+\)', message)
+
     number = r'\d+(?:\.\d+)?'
     operations = deque(['-', '+', '/', '*', '**'])
     message = re.sub('[\s\n]+', ' ', message)
