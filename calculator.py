@@ -37,11 +37,5 @@ def calculate(message: str) -> Union[int, float]:
                 + message[search.end():]
             )
             search = re.search(regex, message)
-    try:
-        return int(message)
-    except ValueError:
-        try:
-            return float(message)
-        except ValueError:
-            return message
+    return message
 
