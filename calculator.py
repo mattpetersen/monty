@@ -1,52 +1,71 @@
-from collections import deque
 import re
 
 
-def calculate(message: str) -> str:
-    """Return message after replacing any math syntax with its result."""
+NUMERICAL_VALUE = r'\d+(?:\.\d+)?'
+PARENTHETICAL_EXPRESSION =  r'\(.+\)'
+OPERATIONS = ('**', '*', '/', '+', '-')
 
-    parens = re.search(r'\(.+\)', message)
-    while parens:
-        message = (
-            message[:parens.start()]
-            + calculate(parens.group(0).strip('()'))
-            + message[parens.end():]
+
+def collapse_all_math(string: str) -> str:
+    string = normalize_whitespace(string)
+    match = re.match('.*', string)
+    return _collapse_all_math(match)
+
+
+def _collapse_all_math(match: re.match) -> str:
+    string = re.sub(
+        PARENTHETICAL_EXPRESSION,
+        _collapse_all_math,
+        match.group(0)
+    )
+    for operation in OPERATIONS:
+        string = re.sub(
+            binary_operation_regex(operation),
+            maybe_compute_binary_operation,
+            string
         )
-        parens = re.search(r'\(.+\)', message)
-
-    number = r'\d+(?:\.\d+)?'
-    operations = deque(['-', '+', '/', '*', '**'])
-    message = re.sub('[\s\n]+', ' ', message)
-    while operations:
-        operation = operations.pop()
-        regex = f'({number}) {re.escape(operation)} ({number})'
-        search = re.search(regex, message)
-        while search:
-            message = (
-                message[:search.start()]
-                + apply_operation(*search.groups(), operation)
-                + message[search.end():]
-            )
-            search = re.search(regex, message)
-    return message
+    return string
 
 
-def apply_operation(a: str, b: str, op: str) -> str:
-    a, b = float(a), float(b)
-    if op == '**': result = a ** b
-    elif op == '*': result = a * b
-    elif op == '/': result = a / b
-    elif op == '+': result = a + b
-    elif op == '-': result = a - b
-    else: raise ValueError(f'Unrecognized operation {op}')
-    return clean(result)
+def maybe_compute_binary_operation(match: re.match) -> str:
+    if match:
+        a, operation, b = match.groups()
+        a, b = float(a), float(b)
+        if operation == '**': result = a ** b
+        elif operation == '*': result = a * b
+        elif operation == '/': result = a / b
+        elif operation == '+': result = a + b
+        elif operation == '-': result = a - b
+        else: raise ValueError(f'Unrecognized operation: {operation}')
+    else:
+        result = match.group(0)
+    return maybe_simplify(result)
 
 
-def clean(number: str) -> str:
+def maybe_simplify(maybe_number: str) -> str:
     try:
-        number = float(number)
-        number = int(number)
+        maybe_number = float(maybe_number)
+        maybe_number = int(maybe_number)
     except ValueError:
         pass
-    return str(number)
+    finally:
+        return str(maybe_number)
+
+
+def simplify(string):
+    try:
+        string = float(string)
+        string = int(string)
+    except ValueError:
+        pass
+    finally:
+        return str(string)
+
+
+def binary_operation_regex(operation: str) -> str:
+    return f'({NUMERICAL_VALUE}) ({re.escape(operation)}) ({NUMERICAL_VALUE})'
+
+
+def normalize_whitespace(string: str) -> str:
+    return re.sub('[\s\n]+', ' ', string)
 
