@@ -13,7 +13,9 @@ def apply_operation(a: str, b: str, op: str) -> str:
     else: raise ValueError(f'Unrecognized operation {op}')
 
 
-def calculate(message: str) -> Union[int, float]:
+def calculate(message: str) -> str:
+    """Return message after replacing any math syntax with its result."""
+
     parens = re.search(r'\(.+\)', message)
     while parens:
         message = (
