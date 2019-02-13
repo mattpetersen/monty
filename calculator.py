@@ -1,16 +1,25 @@
 from collections import deque
 import re
-from typing import *
+
+
+def clean(number: str) -> str:
+    try:
+        number = float(number)
+        number = int(number)
+    except ValueError:
+        pass
+    return str(number)
 
 
 def apply_operation(a: str, b: str, op: str) -> str:
-    a, b = float(a), float(b) 
-    if op == '**': return str(a ** b)
-    elif op == '*': return str(a * b)
-    elif op == '/': return str(a / b)
-    elif op == '+': return str(a + b)
-    elif op == '-': return str(a - b)
+    a, b = float(a), float(b)
+    if op == '**': result = a ** b
+    elif op == '*': result = a * b
+    elif op == '/': result = a / b
+    elif op == '+': result = a + b
+    elif op == '-': result = a - b
     else: raise ValueError(f'Unrecognized operation {op}')
+    return clean(result)
 
 
 def calculate(message: str) -> str:
