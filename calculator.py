@@ -2,26 +2,6 @@ from collections import deque
 import re
 
 
-def clean(number: str) -> str:
-    try:
-        number = float(number)
-        number = int(number)
-    except ValueError:
-        pass
-    return str(number)
-
-
-def apply_operation(a: str, b: str, op: str) -> str:
-    a, b = float(a), float(b)
-    if op == '**': result = a ** b
-    elif op == '*': result = a * b
-    elif op == '/': result = a / b
-    elif op == '+': result = a + b
-    elif op == '-': result = a - b
-    else: raise ValueError(f'Unrecognized operation {op}')
-    return clean(result)
-
-
 def calculate(message: str) -> str:
     """Return message after replacing any math syntax with its result."""
 
@@ -49,4 +29,24 @@ def calculate(message: str) -> str:
             )
             search = re.search(regex, message)
     return message
+
+
+def apply_operation(a: str, b: str, op: str) -> str:
+    a, b = float(a), float(b)
+    if op == '**': result = a ** b
+    elif op == '*': result = a * b
+    elif op == '/': result = a / b
+    elif op == '+': result = a + b
+    elif op == '-': result = a - b
+    else: raise ValueError(f'Unrecognized operation {op}')
+    return clean(result)
+
+
+def clean(number: str) -> str:
+    try:
+        number = float(number)
+        number = int(number)
+    except ValueError:
+        pass
+    return str(number)
 
