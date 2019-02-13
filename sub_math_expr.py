@@ -6,16 +6,16 @@ PARENTHETICAL_EXPRESSION =  r'\(.+\)'
 OPERATIONS = ('**', '*', '/', '+', '-')
 
 
-def collapse_all_math(string: str) -> str:
+def sub_math_expr(string: str) -> str:
     string = normalize_whitespace(string)
-    match = re.match('.*', string)
-    return _collapse_all_math(match)
+    match = re.match(r'.*', string)
+    return _sub_math_expr(match)
 
 
-def _collapse_all_math(match: re.match) -> str:
+def _sub_math_expr(match: re.match) -> str:
     string = re.sub(
         PARENTHETICAL_EXPRESSION,
-        _collapse_all_math,
+        _sub_math_expr,
         match.group(0)
     )
     for operation in OPERATIONS:
@@ -52,18 +52,8 @@ def maybe_simplify(maybe_number: str) -> str:
         return str(maybe_number)
 
 
-def simplify(string):
-    try:
-        string = float(string)
-        string = int(string)
-    except ValueError:
-        pass
-    finally:
-        return str(string)
-
-
 def binary_operation_regex(operation: str) -> str:
-    return f'({NUMERICAL_VALUE}) ({re.escape(operation)}) ({NUMERICAL_VALUE})'
+    return fr'({NUMERICAL_VALUE}) ({re.escape(operation)}) ({NUMERICAL_VALUE})'
 
 
 def normalize_whitespace(string: str) -> str:

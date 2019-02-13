@@ -5,7 +5,8 @@ import discord
 from google import google
 
 from config import TOKEN
-from calculator import calculate
+
+from sub_math_expr import sub_math_expr
 
 
 client = discord.Client()
@@ -37,8 +38,7 @@ async def on_message(message):
         await client.send_message(message.channel, results)
 
     elif message.content.startswith('!calc'):
-        query = message.content[len('!calc'):]
-        await client.send_message(message.channel, calculate(query))
+        await client.send_message(message.channel, sub_math_expr(message.content))
 
 
 client.run(TOKEN)
