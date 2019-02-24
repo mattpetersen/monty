@@ -38,7 +38,12 @@ async def on_message(message):
         await client.send_message(message.channel, results)
 
     elif message.content.startswith('!calc'):
-        await client.send_message(message.channel, sub_math_expr(message.content))
+        await client.send_message(
+            message.channel,
+            sub_math_expr(
+                message.content[len('!calc'):]
+            )
+        )
 
 
 client.run(TOKEN)
