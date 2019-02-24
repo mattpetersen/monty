@@ -8,7 +8,7 @@ OPERATIONS = ('**', '*', '/', '+', '-')
 
 def sub_math_expr(string: str) -> str:
     string = normalize_whitespace(string)
-    match = re.match(r'.*', string)
+    match = match_entire_string(string)
     return _sub_math_expr(match)
 
 
@@ -58,4 +58,8 @@ def binary_operation_regex(operation: str) -> str:
 
 def normalize_whitespace(string: str) -> str:
     return re.sub('[\s\n]+', ' ', string)
+
+
+def match_entire_string(string: str) -> re.match:
+    return re.match('.*', string)
 
