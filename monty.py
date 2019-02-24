@@ -14,7 +14,9 @@ client = discord.Client()
 
 @client.event
 async def on_ready():
-    print(f'Username: {client.user.name} ID: {client.user.id}')
+    print('Username:', client.user.name)
+    print('User ID:', client.user.id)
+    print('Ready.')
 
 
 @client.event
